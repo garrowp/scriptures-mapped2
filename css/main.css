@@ -403,7 +403,7 @@ li.match {
     }
 
     #scripturesAndNav {
-        height: calc(50vh - 56px);
+        height: calc(55vh - 56px);
         scroll-behavior: smooth;
         /* -webkit-overflow-scrolling: touch; */
     }
