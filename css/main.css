@@ -359,16 +359,21 @@ li.match {
 
 .prev_chap {
     /* transform: translateX(350px); */
-    left: -350px
+    left: -100%;
 }
 
 .next_chap {
     /* transform: translateX(-350px); */
-    right: -350px;
+    right: -100%;
 }
 
 .slide {
-    transform: translateX(-350px);
+    transform: translateX(-100%);
+    transition: transform .5s ease-in-out;
+}
+
+.slide_prev {
+    transform: translateX(100%);
     transition: transform .5s ease-in-out;
 }
 

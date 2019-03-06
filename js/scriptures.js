@@ -634,23 +634,26 @@ const scriptures = (function () {
                 let curr_el = document.querySelector('.curr_chap');
                 let next_el = document.querySelector('.next_chap');
 
-                    prev_el.addEventListener('transitionend', () => {
+                    prev_el.addEventListener('transitionend', function handler() {
                         prev_el.classList.replace('prev_chap', 'next_chap');
                         prev_el.classList.remove('slide');
                         transitionComplete(next[1], next[2] + 1, getNextCallback);
+                        this.removeEventListener('transitionend', handler);
                     });
 
-                    next_el.addEventListener('transitionend', () => {
+                    next_el.addEventListener('transitionend', function handler() {
                         
                         next_el.classList.replace('next_chap', 'curr_chap');
                         next_el.classList.remove('slide');
                         transitionComplete(next[1], next[2] + 1, getNextCallback);
+                        this.removeEventListener('transitionend', handler);
                     });
 
-                    curr_el.addEventListener('transitionend', () => {
+                    curr_el.addEventListener('transitionend', function handler() {
                         curr_el.classList.replace('curr_chap', 'prev_chap');
                         curr_el.classList.remove('slide');
                         transitionComplete(next[1], next[2] + 1, getNextCallback);
+                        this.removeEventListener('transitionend', handler);
                     });
 
                 document.querySelectorAll('.chap').forEach(chap => {
@@ -670,6 +673,37 @@ const scriptures = (function () {
         document.querySelector('#prev').addEventListener('click', () => {
             let prev = previousChapter(bookId, chapter);
             if (prev !== undefined) {
+                let prev_el = document.querySelector('.prev_chap');
+                let curr_el = document.querySelector('.curr_chap');
+                let next_el = document.querySelector('.next_chap');
+
+                prev_el.addEventListener('transitionend', function handler() {
+                    prev_el.classList.replace('prev_chap', 'curr_chap');
+                    prev_el.classList.remove('slide_prev');
+                    console.log('here');
+                    transitionComplete(prev[1], prev[2] - 1, getPrevCallback);
+                    this.removeEventListener('transitionend', handler);
+                });
+
+                next_el.addEventListener('transitionend', function handler() {
+                    
+                    next_el.classList.replace('next_chap', 'prev_chap');
+                    next_el.classList.remove('slide_prev');
+                    transitionComplete(prev[1], prev[2] - 1, getPrevCallback);
+                    this.removeEventListener('transitionend', handler);
+                });
+
+                curr_el.addEventListener('transitionend', function handler() {
+                    curr_el.classList.replace('curr_chap', 'next_chap');
+                    curr_el.classList.remove('slide_prev');
+                    transitionComplete(prev[1], prev[2] - 1, getPrevCallback);
+                    this.removeEventListener('transitionend', handler);
+                });
+
+                document.querySelectorAll('.chap').forEach(chap => {
+                    chap.classList.add('slide_prev');
+                    // console.log(chap.classList); 
+                });
                 location.hash = `#${prev[0]}:${prev[1]}:${prev[2]}`;
             } else {
                 navigateHome();
