@@ -1,0 +1,81 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto|Roboto+Condensed|Roboto+Mono|Noto+Serif" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css" />
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="./js/scriptures.js"></script>
+
+</head>
+<body>
+    <div id='header'>
+        <div id='crumb'></div>
+        <div id='centerhead'>
+            <div class='title'>The Scriptures, Mapped</div>
+            <div class='subtitle'>By Peter Garrow</div>
+        </div>
+    </div>
+    <div id='content'>
+        <div id='scripturesAndNav'>
+            <div id='navButtons'></div>
+            <div id='scriptures'>
+                <!-- <div class='chapters'>
+                    <div class='prev_chap'></div>
+                    <div class='curr_chap'></div>
+                    <div class='next_chap'></div>
+                </div> -->
+            </div>
+            <!-- <div class='chapters'>
+                <div class='prev_chap chap'></div>
+                <div id='scriptures' class='curr_chap chap'></div>
+                <div class='next_chap chap'></div>
+            </div> -->
+            
+        </div>
+        <div id='map'></div>
+    </div>
+    <script type="text/javascript">
+        let map;
+        let showLocation;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 31.777444, lng: 35.234935},
+                zoom: 8
+            });
+        }
+
+        function ready(eventHandler) {
+            "use strict";
+
+            if (document.attachEvent
+                    ? document.readyState === "complete"
+                    : document.readyState !== "loading") {
+                eventHandler();
+            } else {
+                document.addEventListener("DOMContentLoaded", eventHandler);
+            }
+        }
+
+        ready(function () {
+            scriptures.init(function () {
+                window.addEventListener("hashchange", scriptures.onHashChanged);
+                scriptures.onHashChanged();
+            });
+
+            showLocation = scriptures.showLocation;
+            changeHash = scriptures.changeHash;
+        });
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKp428JLTtBGa7WpB-iTxs3O9Ap2eKYBc&callback=initMap"
+    async defer></script>
+</body>
+</html>
