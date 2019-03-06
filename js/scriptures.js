@@ -50,6 +50,7 @@ const scriptures = (function () {
     let prev_chap = false;
     let retryDelay = 500;
     let transitions = 0;
+    let transitioning = false;
     let volumes;
 
     /*---------------------------------------------------------------
@@ -257,10 +258,12 @@ const scriptures = (function () {
 
     getNextCallback = function(chapterHTML) {   
         document.querySelector('#scriptures .chapters .next_chap').innerHTML = chapterHTML;
+        // setupMarkers();
     };
 
     getPrevCallback = function(chapterHTML) {
         document.querySelector('#scriptures .chapters .prev_chap').innerHTML = chapterHTML;
+        // setupMarkers();
     };
 
     // NEED TO CHANGE THIS TO WORK FOR RIGHT AND LEFT AS WELL
@@ -330,6 +333,8 @@ const scriptures = (function () {
         }
 
         generateBreadcrumb(book.parentBookId, bookId);
+        next_chap = false;
+        prev_chap = false;
     };
 
     navigateChapter = function(bookId, chapter) {
@@ -355,8 +360,6 @@ const scriptures = (function () {
             }
 
             showNextPrev(bookId, chapter);
-
-            console.log(next_chap, prev_chap);
 
             if (!next_chap && !prev_chap) {
                 ajax(encodedScriptureUrlParameters(bookId, chapter),
@@ -405,6 +408,8 @@ const scriptures = (function () {
         document.querySelector('#scriptures').innerHTML = navContents;
 
         volumeId !== undefined ? generateBreadcrumb(volumeId) : generateBreadcrumb();
+        next_chap = false;
+        prev_chap = false;
     };
 
     nextChapter = function(bookId, chapter) {
@@ -572,7 +577,7 @@ const scriptures = (function () {
             clearMarkers();
         }
 
-        document.querySelectorAll('a[onclick^="showLocation("]').forEach((el) => {
+        document.querySelectorAll('.curr_chap a[onclick^="showLocation("]').forEach((el) => {
             let matches = LAT_LON_PARSER.exec(el.getAttribute("onclick"));
 
             if (matches) {
@@ -628,8 +633,10 @@ const scriptures = (function () {
         // NEED TO ADJUST THIS TO CHANGE THE HASH BUT ALSO JUST SLIDE IN THE NEXT CHAPTER
         document.querySelector('#next').addEventListener('click', () => {
             let next = nextChapter(bookId, chapter);
-            console.log(next);
-            if (next !== undefined) {
+            let nextChap = nextChapter(next[1], next[2]);
+
+            if (nextChap !== undefined && !transitioning) {
+                transitioning = true;
                 let prev_el = document.querySelector('.prev_chap');
                 let curr_el = document.querySelector('.curr_chap');
                 let next_el = document.querySelector('.next_chap');
@@ -637,7 +644,7 @@ const scriptures = (function () {
                     prev_el.addEventListener('transitionend', function handler() {
                         prev_el.classList.replace('prev_chap', 'next_chap');
                         prev_el.classList.remove('slide');
-                        transitionComplete(next[1], next[2] + 1, getNextCallback);
+                        transitionComplete(nextChap[1], nextChap[2], getNextCallback);
                         this.removeEventListener('transitionend', handler);
                     });
 
@@ -645,26 +652,24 @@ const scriptures = (function () {
                         
                         next_el.classList.replace('next_chap', 'curr_chap');
                         next_el.classList.remove('slide');
-                        transitionComplete(next[1], next[2] + 1, getNextCallback);
+                        transitionComplete(nextChap[1], nextChap[2], getNextCallback);
                         this.removeEventListener('transitionend', handler);
                     });
 
                     curr_el.addEventListener('transitionend', function handler() {
                         curr_el.classList.replace('curr_chap', 'prev_chap');
                         curr_el.classList.remove('slide');
-                        transitionComplete(next[1], next[2] + 1, getNextCallback);
+                        transitionComplete(nextChap[1], nextChap[2], getNextCallback);
                         this.removeEventListener('transitionend', handler);
                     });
 
                 document.querySelectorAll('.chap').forEach(chap => {
                     chap.classList.add('slide');
-                    // console.log(chap.classList); 
                 });
 
-                // next_chap = false;
-
                 location.hash = `#${next[0]}:${next[1]}:${next[2]}`;
-            } else {
+                setupMarkers();
+            } else if (!transitioning) {
                 navigateHome();
             }
         });
@@ -672,7 +677,9 @@ const scriptures = (function () {
         // NEED TO ADJUST THIS TO CHANGE THE HASH BUT ALSO JUST SLIDE IN THE PREV CHAPTER
         document.querySelector('#prev').addEventListener('click', () => {
             let prev = previousChapter(bookId, chapter);
-            if (prev !== undefined) {
+            let prevChap = previousChapter(prev[1], prev[2]);
+            if (prevChap !== undefined && !transitioning) {
+                transitioning = true;
                 let prev_el = document.querySelector('.prev_chap');
                 let curr_el = document.querySelector('.curr_chap');
                 let next_el = document.querySelector('.next_chap');
@@ -680,8 +687,7 @@ const scriptures = (function () {
                 prev_el.addEventListener('transitionend', function handler() {
                     prev_el.classList.replace('prev_chap', 'curr_chap');
                     prev_el.classList.remove('slide_prev');
-                    console.log('here');
-                    transitionComplete(prev[1], prev[2] - 1, getPrevCallback);
+                    transitionComplete(prevChap[1], prevChap[2], getPrevCallback);
                     this.removeEventListener('transitionend', handler);
                 });
 
@@ -689,49 +695,27 @@ const scriptures = (function () {
                     
                     next_el.classList.replace('next_chap', 'prev_chap');
                     next_el.classList.remove('slide_prev');
-                    transitionComplete(prev[1], prev[2] - 1, getPrevCallback);
+                    transitionComplete(prevChap[1], prevChap[2], getPrevCallback);
                     this.removeEventListener('transitionend', handler);
                 });
 
                 curr_el.addEventListener('transitionend', function handler() {
                     curr_el.classList.replace('curr_chap', 'next_chap');
                     curr_el.classList.remove('slide_prev');
-                    transitionComplete(prev[1], prev[2] - 1, getPrevCallback);
+                    transitionComplete(prevChap[1], prevChap[2], getPrevCallback);
                     this.removeEventListener('transitionend', handler);
                 });
 
                 document.querySelectorAll('.chap').forEach(chap => {
                     chap.classList.add('slide_prev');
-                    // console.log(chap.classList); 
                 });
                 location.hash = `#${prev[0]}:${prev[1]}:${prev[2]}`;
-            } else {
+                setupMarkers();
+            } else if (!transitioning){
                 navigateHome();
             }
         });
     };
-
-    // slideLeft = function () {
-    //     let prev_el = document.querySelector('.prev_chap');
-    //     let curr_el = document.querySelector('.curr_chap');
-    //     let next_el = document.querySelector('.next_chap');
-
-    //     document.querySelectorAll('.chap').forEach(chap => {
-    //         // chap.style.transform = 'translateX(-350px)';
-    //         chap.classList.add('slide');
-    //         console.log(chap.classList);
-    //     });
-
-    //     next_el.ontransitionend = () => {
-    //         console.log('next is done');
-    //     }
-
-    //     prev_el.classList.replace('prev_chap', 'next_chap');
-    //     curr_el.classList.replace('curr_chap', 'prev_chap');
-    //     next_el.classList.replace('next_chap', 'curr_chap');
-
-    //     console.log(prev_el);
-    // }
 
     titleForBookChapter = function (book, chapter) {
         if (chapter > 0){
@@ -748,6 +732,7 @@ const scriptures = (function () {
             ajax(encodedScriptureUrlParameters(book, chapter),
                         ajaxCallback, getScriptureFailed, true);
             transitions = 0;
+            transitioning = false;
         }
     }
 
