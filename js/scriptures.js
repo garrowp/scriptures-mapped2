@@ -367,13 +367,15 @@ const scriptures = (function () {
             }
 
             if (!next_chap) {
-                ajax(encodedScriptureUrlParameters(bookId, chapter + 1),
+                let next = nextChapter(bookId, chapter)
+                ajax(encodedScriptureUrlParameters(next[1], next[2]),
                     getNextCallback, getScriptureFailed, true);
                 next_chap = true;
             }
 
             if (!prev_chap) {
-                ajax(encodedScriptureUrlParameters(bookId, chapter - 1),
+                let prev = previousChapter(bookId, chapter);
+                ajax(encodedScriptureUrlParameters(prev[1], prev[2]),
                     getPrevCallback, getScriptureFailed, true);
                 prev_chap = true;
             }
