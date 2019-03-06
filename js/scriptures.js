@@ -312,7 +312,7 @@ const scriptures = (function () {
 
     navigateBook = function (bookId) {
         let book = books[bookId];
-        hideNextPrev();
+        
         if (book.numChapters === 0 ) {
             navigateChapter(bookId, 0);
         } else if (book.numChapters === 1) {
@@ -329,7 +329,14 @@ const scriptures = (function () {
             }
 
             content += '</div></div>';
-            document.getElementById('scriptures').innerHTML = content;
+            console.log(content);
+            $('#scriptures').fadeOut(250, () => {
+                hideNextPrev();
+                document.querySelector('#scriptures').innerHTML = content;
+            });
+
+            $('#scriptures').fadeIn(250);
+            // document.getElementById('scriptures').innerHTML = content;
         }
 
         generateBreadcrumb(book.parentBookId, bookId);
@@ -342,13 +349,6 @@ const scriptures = (function () {
         if (bookId !== undefined) {
             let book = books[bookId];
             let volume = volumes[book.parentBookId - 1];
-
-
-            // GET NEXT AND PREV  CHAPTERS AS WELL
-            // CHECK IF THEY EXIST FIRST
-            // IF NOT, DON'T GET THEM
-
-            // SLIDE
 
             if (!document.querySelector('.chapters')) {
                 document.querySelector('#scriptures').innerHTML = `
@@ -379,20 +379,14 @@ const scriptures = (function () {
                     getPrevCallback, getScriptureFailed, true);
                 prev_chap = true;
             }
-            
 
-            
-
-            
-
-            
             generateBreadcrumb(book.parentBookId, bookId, chapter);
         }
     };
 
     navigateHome = function (volumeId) {
         let navContents = "<div id='scriptnav'>";
-        hideNextPrev();
+        
         volumes.forEach((volume) => {
             if (volumeId === undefined || volumeId === volume.id) {
                 navContents += `<div class='volume'>
@@ -407,7 +401,12 @@ const scriptures = (function () {
             }
         });
         navContents += "<br /><br /></div>";
-        document.querySelector('#scriptures').innerHTML = navContents;
+        $('#scriptures').fadeOut(250, () => {
+            hideNextPrev();
+            document.querySelector('#scriptures').innerHTML = navContents;
+        });
+
+        $('#scriptures').fadeIn(250);
 
         volumeId !== undefined ? generateBreadcrumb(volumeId) : generateBreadcrumb();
         next_chap = false;
