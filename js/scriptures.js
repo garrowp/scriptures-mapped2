@@ -266,7 +266,7 @@ const scriptures = (function () {
         // setupMarkers();
     };
 
-    // NEED TO CHANGE THIS TO WORK FOR RIGHT AND LEFT AS WELL
+    
     getScriptureCallback = function (chapterHTML) {
         document.querySelector('#scriptures .chapters .curr_chap').innerHTML = chapterHTML;
         setupMarkers();
@@ -329,14 +329,12 @@ const scriptures = (function () {
             }
 
             content += '</div></div>';
-            console.log(content);
             $('#scriptures').fadeOut(250, () => {
                 hideNextPrev();
                 document.querySelector('#scriptures').innerHTML = content;
             });
 
             $('#scriptures').fadeIn(250);
-            // document.getElementById('scriptures').innerHTML = content;
         }
 
         generateBreadcrumb(book.parentBookId, bookId);
@@ -379,6 +377,8 @@ const scriptures = (function () {
                     getPrevCallback, getScriptureFailed, true);
                 prev_chap = true;
             }
+
+            // setupMarkers();
 
             generateBreadcrumb(book.parentBookId, bookId, chapter);
         }
@@ -669,7 +669,7 @@ const scriptures = (function () {
                 });
 
                 location.hash = `#${next[0]}:${next[1]}:${next[2]}`;
-                setupMarkers();
+                // setupMarkers();
             } else if (!transitioning) {
                 navigateHome();
             }
@@ -711,7 +711,7 @@ const scriptures = (function () {
                     chap.classList.add('slide_prev');
                 });
                 location.hash = `#${prev[0]}:${prev[1]}:${prev[2]}`;
-                setupMarkers();
+                // setupMarkers();
             } else if (!transitioning){
                 navigateHome();
             }
@@ -730,6 +730,7 @@ const scriptures = (function () {
         transitions++;
 
         if (transitions === TRANSITION_LIMIT) {
+            setupMarkers();
             ajax(encodedScriptureUrlParameters(book, chapter),
                         ajaxCallback, getScriptureFailed, true);
             transitions = 0;
