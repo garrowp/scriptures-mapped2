@@ -258,12 +258,10 @@ const scriptures = (function () {
 
     getNextCallback = function(chapterHTML) {   
         document.querySelector('#scriptures .chapters .next_chap').innerHTML = chapterHTML;
-        // setupMarkers();
     };
 
     getPrevCallback = function(chapterHTML) {
         document.querySelector('#scriptures .chapters .prev_chap').innerHTML = chapterHTML;
-        // setupMarkers();
     };
 
     
@@ -377,8 +375,6 @@ const scriptures = (function () {
                     getPrevCallback, getScriptureFailed, true);
                 prev_chap = true;
             }
-
-            // setupMarkers();
 
             generateBreadcrumb(book.parentBookId, bookId, chapter);
         }
@@ -631,7 +627,6 @@ const scriptures = (function () {
         document.querySelector('#navButtons').style.borderBottom = '1px solid #eee';
         document.querySelector('#scriptures').style.height = 'calc(100% - 46px)';
 
-        // NEED TO ADJUST THIS TO CHANGE THE HASH BUT ALSO JUST SLIDE IN THE NEXT CHAPTER
         document.querySelector('#next').addEventListener('click', () => {
             let next = nextChapter(bookId, chapter);
             let nextChap = nextChapter(next[1], next[2]);
@@ -669,13 +664,11 @@ const scriptures = (function () {
                 });
 
                 location.hash = `#${next[0]}:${next[1]}:${next[2]}`;
-                // setupMarkers();
             } else if (!transitioning) {
                 navigateHome();
             }
         });
 
-        // NEED TO ADJUST THIS TO CHANGE THE HASH BUT ALSO JUST SLIDE IN THE PREV CHAPTER
         document.querySelector('#prev').addEventListener('click', () => {
             let prev = previousChapter(bookId, chapter);
             let prevChap = previousChapter(prev[1], prev[2]);
@@ -711,7 +704,6 @@ const scriptures = (function () {
                     chap.classList.add('slide_prev');
                 });
                 location.hash = `#${prev[0]}:${prev[1]}:${prev[2]}`;
-                // setupMarkers();
             } else if (!transitioning){
                 navigateHome();
             }
