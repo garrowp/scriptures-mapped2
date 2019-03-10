@@ -193,7 +193,7 @@ div.books a.chapter {
     text-decoration: none;
 }
 
-#header a:hover {
+#header span:not(:last-child):hover {
     color: #979797;
     /* text-decoration: underline; */
 }
@@ -334,9 +334,13 @@ li.match {
     float: right;
 } */
 
-#crumb a {
+#crumb span {
     cursor: pointer;
     text-decoration: none;
+}
+
+#crumb span:last-child {
+    cursor: default;
 }
 
 .labels {

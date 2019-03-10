@@ -8,3 +8,12 @@ I added the breadcrumbs on my own, added the buttons for nextChapter/prevChapter
 styling that I wanted. I also got to spend time trying to come up with a solution with the map labels
 on my own which didn't turn out the best but I was able to learn through trial and error.
 
+
+For this second part of the project, I've really worked on figuring out how the events play out. I decided
+to do the sliding animcations without jQuery and it tooks some time to figure out the best way to do that.
+I had to make sure all of the transitions were finished before I could continue in my code. This took some time
+to figure out but I imagine that the jQuery animate function is doing something similar in the background.
+I also had to solve the problem of the button still being clickable during a transition. I added some checks to
+stop the button press event from doing anything if a transition was in progress. I'm sure there are ways to 
+refactor and simplify this code but I'm glad that it's working and also that I could change up the CSS to give
+it some additional style.

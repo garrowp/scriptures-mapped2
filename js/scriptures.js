@@ -35,9 +35,7 @@ const scriptures = (function () {
    const REQUEST_GET = "GET";
    const REQUEST_STATUS_OK = 200;
    const REQUEST_STATUS_ERROR = 400;
-   const SCRIPTURES = `<span>
-                            <a onclick="changeHash()">The Scriptures</a>
-                        </span>`;
+   const SCRIPTURES = `<span onclick="changeHash()">The Scriptures</span>`;
    const SCRIPTURES_URL = "https://scriptures.byu.edu/mapscrip/mapgetscrip.php";
    const TRANSITION_LIMIT = 3;
 
@@ -221,26 +219,33 @@ const scriptures = (function () {
     generateBreadcrumb = function(volumeId, bookId, chapter) {
         let breadcrumb = document.querySelector('#crumb');
 
-        breadcrumb.innerHTML = SCRIPTURES;
+        // breadcrumb.innerHTML = SCRIPTURES;
+
+        let crumbs = [SCRIPTURES]
 
         if (volumeId) {
-            breadcrumb.innerHTML += `> ${getCrumbVolume(volumeId)}`;
+            // breadcrumb.innerHTML += `> ${getCrumbVolume(volumeId, bookId)}`;
+            crumbs.push(getCrumbVolume(volumeId, bookId));
         }
 
         if (bookId) {
-            breadcrumb.innerHTML += `> ${getCrumbBook(volumeId, bookId)}`;
+            // breadcrumb.innerHTML += `> ${getCrumbBook(volumeId, bookId, chapter)}`;
+            crumbs.push(getCrumbBook(volumeId, bookId, chapter));
         }
 
         if (chapter) {
-            breadcrumb.innerHTML += `> ${getCrumbChapter(volumeId, bookId, chapter)}`;
+            // breadcrumb.innerHTML += `> ${getCrumbChapter(volumeId, bookId, chapter)}`;
+            crumbs.push(getCrumbChapter(volumeId, bookId, chapter));
         }
+
+        breadcrumb.innerHTML = crumbs.join(' > ');
     };
 
-    getCrumbBook = function(volumeId, bookId) {
+    getCrumbBook = function(volumeId, bookId, chapter) {
         let book = books[bookId];
-        return `<span>
-            <a onclick="changeHash(${volumeId}, ${bookId})">${book.gridName}</a>
-        </span>`;
+        return chapter ? `<span onclick="changeHash(${volumeId}, ${bookId})">${book.gridName}</span>` : `<span>${book.gridName}</span>`;
+        //     <a onclick="changeHash(${volumeId}, ${bookId})">${book.gridName}</a>
+        // </span>`;
     };
 
     getCrumbChapter = function(volumeId, bookId, chapter) {
@@ -249,11 +254,12 @@ const scriptures = (function () {
         </span>`;
     };
 
-    getCrumbVolume = function(volumeId) {
+    getCrumbVolume = function(volumeId, bookId) {
         let volume = volumes[volumeId - 1];
-        return `<span>
-                    <a onclick="changeHash(${volumeId})">${volume.gridName}</a>
-                </span>`;
+        return bookId ? `<span onclick="changeHash(${volumeId})">${volume.gridName}</span>` : `<span>${volume.gridName}</span>`;
+        // return `<span>
+        //             <a onclick="changeHash(${volumeId})">${volume.gridName}</a>
+        //         </span>`;
     };
 
     getNextCallback = function(chapterHTML) {   
